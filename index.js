@@ -6,23 +6,14 @@ const config = {
 ///////////////////////////////
 ///////////////////////////////
 // STARTUPS ///////////////////
-const Eris = require("@erupcja/selfbot-eris");
-const self = new Eris(
-    config.token,
-    {
-        allowedMentions: {
-            everyone: true,
-            roles: true,
-            users: true
-        }
-    }
-);
+const { Client } = require("discord.js");
+const bot = new Client();
 
 ///////////////////////////////
 ///////////////////////////////
 // VARIABLES //////////////////
 const devs = { "extase#0001" };
-const discord = "";
+const discord = { id: "", invite: "" };
 const source = "https://github.com/ex7ase/gandalf";
 const donors = {};
 let cmds = [];
@@ -32,14 +23,14 @@ let cmds = [];
 // CLASSES ////////////////////
 class embed {
 	constructor() {
-		this.embed = {};
+		this.embed = { color: 0x2f3136 };
 	}
 	
-	boolean(bool) {
-		if (!Boolean(bool) || !bool || !bool === null) {
+	boolean(value) {
+		if (!Boolean(value) || !value || !value === null) {
 			return false;
 		} else {
-			return bool;
+			return value;
 		};
 	}
 	
@@ -78,7 +69,7 @@ class embed {
 		return { embed: this.embed };
 	}
 	
-	description(name) {
+	desc(name) {
 		this.embed.description = this.clamp(name);
 		return { embed: this.embed };
 	}
@@ -119,8 +110,6 @@ class embed {
 		this.embed.timestamp = name;
 		return { embed: this.embed };
 	}
-	
-	color() {}
 };
 
 ///////////////////////////////
@@ -136,6 +125,20 @@ function enter(options) {
 		code: options.code
 	});
 };
+///////////////////////////////
+function organize(string) {
+	switch (string) {
+		case "info":
+			return "𐐪𐑂: Info";
+			break;
+		case "utility":
+			return "𐐪𐑂: Utility";
+			break;
+		case "fun":
+			return "𐐪𐑂: Fun";
+			break;
+	};
+};
 
 ///////////////////////////////
 ///////////////////////////////
@@ -146,7 +149,7 @@ enter({
 	group: "info",
 	topic: "Shows the cmds or cmd info.",
 	usage: "(cmd)",
-	code: function(msg, args) {
+	code: async function(msg, args) {
 		if (!args.length) {
 			let cmd;
 			
@@ -163,16 +166,13 @@ enter({
 			};
 			
 			if (!cmd) {
-				return self.createMessage(
-					msg.channel.id,
-					`**${args[0]}** is an invalid cmd.`
-				);
+				return msg.channel.send(`**${args[0]}** is an invalid cmd.`);
 			} else {
 				return self.createMessage(
 					msg.channel.id,
 					new embed()
 						.title(cmd.name)
-						.description(cmd.topic)
+						.desc(cmd.topic)
 						.fields([
 							{
 								name: "Aliases",
@@ -186,25 +186,75 @@ enter({
 								value: "**" 
 									+ config.prefix
 									+ cmd.name
-									+ "**" + cmd.usage,
+									+ "**"
+									+ cmd.usage,
 								inline: true
 							}
 						])
 				);
 			};
-		}
+		} else {
+			const groups = [...new Set(
+				cmds.map(c => c.group)
+			)];
+			
+			let fields = [];
+			
+			for (const group of groups) {
+				fields.push({
+					name: organize(group),
+					value: bot.cmds
+						.filter(c => c.group === group)
+						.map(c => `\`${c.name}\``)
+						.join("\n"),
+					inline: true
+				});
+			};
+			
+			await msg.channel.send(
+				new embed()
+					.desc(`Use __**${config.prefix}help** (cmd)__ for more.`)
+					.fields(fields)
+			);
+		};
 	}
 });
 ///////////////////////////////
 enter({
+	name: "ping",
+	aliases: ["pingppong", "ms"],
+	group: "info",
+	topic: "Shows your ping and latency.",
+	usage: "()",
+	code: async function(msg, args) {
+		await msg.channel.send([
+			`Ping: **${bot.ws.ping}**`,
+			`Latency: **${Date.now() - msg.createdTimestamp}**`
+		]);
+	}
 });
 
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
-client.on("messageCreate", async function(msg) {
+bot.on("ready", async function() {
+	if (bot.guilds.cache.get(discord.id)) {
+		return;
+	} else {
+		console.log([
+			`> CMDS:     ${cmds.length}`,
+			`> SUPPORT:  ${discord.invite}`,
+			`> LOGIN:    ${bot.token}`,
+			`            ${bot.user.tag}`,
+			`            ${bot.user.id}`
+		]);
+	};
+});
+///////////////////////////////
+bot.on("message", async function(msg) {
 	if (!msg.guild || 
-		!msg.content.startsWith(config.prefix)) {
+		!msg.content.startsWith(config.prefix) ||
+	   	msg.author.id !== bot.user.id) {
 		return;
 	};
 	
