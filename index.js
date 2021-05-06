@@ -3,6 +3,8 @@ const config = {
 	prefix: ""
 };
 
+let list = [];
+
 ///////////////////////////////
 ///////////////////////////////
 // VARIABLES //////////////////
@@ -114,10 +116,22 @@ class embed {
 
 ///////////////////////////////
 ///////////////////////////////
+// FUNCTIONS //////////////////
+
+///////////////////////////////
+///////////////////////////////
 // COMMANDS ///////////////////
 client.on("messageCreate", async function(msg) {
+	if (!msg.guild || 
+		!msg.content.startsWith(config.prefix)) {
+		return;
+	};
+	
 	const args = msg.content
 		.slice(config.prefix.length)
 		.trim()
 		.split(/ +/g);
+	const command = args
+		.shift()
+		.toLowerCase();
 });
