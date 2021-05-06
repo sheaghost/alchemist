@@ -33,7 +33,11 @@ const bot = new Eris(
 ///////////////////////////////
 // VARIABLES //////////////////
 const devs = { "extase#0001" };
-const discord = { id: "", invite: "" };
+const discord = { 
+	id: "839994435529998349", 
+	invite: "discord.gg/Wdrsu2xQez" 
+};
+
 const source = "https://github.com/ex7ase/gandalf";
 const donors = {};
 let cmds = [];
