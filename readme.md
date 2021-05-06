@@ -21,7 +21,10 @@ Make sure you have the following:
   + [VSCode](https://code.visualstudio.com/)
 	
 When you have your file, direct your command prompt to the file for this self bot.
-Upon doing that and having node and such, run **npm i** then the package for all of these:
-  + Eris
+Upon doing that and having node and such, run **npm i --save** then the package for all of these:
+  + @erupcja/selfbot-eris
   + moment
   + ms
+  + node-superfetch
+
+You can do multiple downloads by doing **npm i --save {package} {package}**, like this, **npm i --save moment node-superfetch**.
