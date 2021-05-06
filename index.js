@@ -117,6 +117,15 @@ class embed {
 ///////////////////////////////
 ///////////////////////////////
 // FUNCTIONS //////////////////
+function enter(options) {
+	list.push({
+		name: options.name,
+		aliases: options.aliases,
+		group: options.group,
+		topic: options.topic,
+		usage: options.usage
+	});
+};
 
 ///////////////////////////////
 ///////////////////////////////
