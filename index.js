@@ -3,11 +3,9 @@ const config = {
 	prefix: ""
 };
 
-let list = [];
-
 ///////////////////////////////
 ///////////////////////////////
-// VARIABLES //////////////////
+// STARTUPS ///////////////////
 const Eris = require("@erupcja/selfbot-eris");
 const self = new Eris(
     config.token,
@@ -19,6 +17,15 @@ const self = new Eris(
         }
     }
 );
+
+///////////////////////////////
+///////////////////////////////
+// VARIABLES //////////////////
+const devs = { "extase#0001" };
+const discord = "";
+const source = "https://github.com/ex7ase/gandalf";
+const donors = {};
+let commands = [];
 
 ///////////////////////////////
 ///////////////////////////////
@@ -118,18 +125,25 @@ class embed {
 ///////////////////////////////
 // FUNCTIONS //////////////////
 function enter(options) {
-	list.push({
+	return commands.push({
 		name: options.name,
 		aliases: options.aliases,
 		group: options.group,
 		topic: options.topic,
-		usage: options.usage
+		usage: options.usage,
+		ability: options.ability
 	});
 };
 
 ///////////////////////////////
 ///////////////////////////////
 // COMMANDS ///////////////////
+enter({
+	
+	
+///////////////////////////////
+///////////////////////////////
+// EVENTS /////////////////////
 client.on("messageCreate", async function(msg) {
 	if (!msg.guild || 
 		!msg.content.startsWith(config.prefix)) {
