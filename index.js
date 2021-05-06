@@ -13,13 +13,17 @@ let config = {
 // STARTUPS ///////////////////
 const Eris = require("@erupcja/selfbot-eris");
 const bot = new Eris(
-	config.token,
-	{
+	config.token, {
 		allowedMentions: {
 			everyone: true,
 			roles: true,
 			users: true
-		}
+		},
+		intents: [
+			"guildMembers",
+			"getAllUsers",
+			"guilds"
+		]
 	}
 );
 
@@ -273,10 +277,39 @@ enter({
 			msg.channel.id,
 			new embed()
 				.title(`${user.username}'s Avatar`)
-				.image(user.avatarURL.replace("size=128", "size=256"))
+				.image(
+					user.avatarURL
+					   .replace("size=128", "size=256")
+				)
 		);
 	}
 });
+///////////////////////////////
+enter({
+	name: "whois",
+	aliases: ["userinfo", "profile", "plr"],
+	group: "info",
+	topic: "Shows data on someone.",
+	usage: "(mention)",
+	code: async function(msg, args) {
+		const user = msg.mentions[0]
+			? msg.mentions
+			: self.user;
+		
+		await bot.createMessage(
+			msg.channel.id,
+			new embed()
+				.title(user.username)
+				.desc([
+					`Tag: **${user.username}#${user.discriminator}**`,
+                    `Avatar: **[Link](${user.avatarURL})**`,
+                   	`Made: **${moment(user.createdAt)
+                            .format("LL")}**`
+				])
+		);
+	}
+});
+
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
@@ -324,6 +357,10 @@ bot.on("messageCreate", async function(msg) {
 	if (!data) {
 		return;
 	} else {
-		return data.code(msg, args);
+		data.code(msg, args);
+		
+		setTimeout(() => {
+			msg.delete();
+		}, 25000);
 	};
 });
