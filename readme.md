@@ -2,7 +2,6 @@
 A single-file Discord self bot.
 
 ### Features
-  + Customizable settings.
   + Fast.
  
 ### Updates
