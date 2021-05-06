@@ -120,7 +120,7 @@ class embed {
 		return { embed: this.embed };
 	}
 	
-	color(
+	color() {}
 };
 
 ///////////////////////////////
@@ -139,7 +139,7 @@ function enter(options) {
 
 ///////////////////////////////
 ///////////////////////////////
-// cmdS ///////////////////
+// CMDS ///////////////////////
 enter({
 	name: "help",
 	aliases: ["menu", "cmds"],
