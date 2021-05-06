@@ -1,8 +1,36 @@
-const config = {
-	token: "",
-	prefix: ""
+///////////////////////////////
+///////////////////////////////
+// SETTINGS ///////////////////
+const fs = require("fs");
+let config = {
+	token: "TOKEN_HERE",
+	prefix: "!",
+	color: 0x2f3136 // 0xcode (for example, 0x2f3136)
 };
 
+fs.access("presets.json", fs.F_OK, function(error) {
+	if (error) {
+		fs.writeFile(
+			"presets.json", 
+			config,
+			function(error) {
+				if (error) {
+					return console.error(error);
+				};
+		});
+	} else {
+		fs.readFile("presets.json", function(error, text) {
+			if (error) {
+				return console.error(error);
+			} elseif (!text) {
+				return;
+			} else {
+				config.prefix = text.prefix;
+				config.color = text.color;
+			};
+		});
+	};
+});
 ///////////////////////////////
 ///////////////////////////////
 // STARTUPS ///////////////////
@@ -23,7 +51,7 @@ let cmds = [];
 // CLASSES ////////////////////
 class embed {
 	constructor() {
-		this.embed = { color: 0x2f3136 };
+		this.embed = { color: config.color };
 	}
 	
 	boolean(value) {
