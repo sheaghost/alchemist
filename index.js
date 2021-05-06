@@ -1,7 +1,6 @@
 ///////////////////////////////
 ///////////////////////////////
 // SETTINGS ///////////////////
-const fs = require("fs");
 let config = {
 	token: "TOKEN_HERE",
 	prefix: "!",
@@ -11,6 +10,9 @@ let config = {
 ///////////////////////////////
 ///////////////////////////////
 // STARTUPS ///////////////////
+const moment = require("moment");
+const ms = require("ms");
+const superfetch = require("node-superfetch");
 const Eris = require("@erupcja/selfbot-eris");
 const bot = new Eris(
 	config.token, {
