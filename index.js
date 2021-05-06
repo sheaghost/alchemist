@@ -25,7 +25,7 @@ const devs = { "extase#0001" };
 const discord = "";
 const source = "https://github.com/ex7ase/gandalf";
 const donors = {};
-let commands = [];
+let cmds = [];
 
 ///////////////////////////////
 ///////////////////////////////
@@ -119,28 +119,86 @@ class embed {
 		this.embed.timestamp = name;
 		return { embed: this.embed };
 	}
+	
+	color(
 };
 
 ///////////////////////////////
 ///////////////////////////////
 // FUNCTIONS //////////////////
 function enter(options) {
-	return commands.push({
+	return cmds.push({
 		name: options.name,
 		aliases: options.aliases,
 		group: options.group,
 		topic: options.topic,
 		usage: options.usage,
-		ability: options.ability
+		code: options.code
 	});
 };
 
 ///////////////////////////////
 ///////////////////////////////
-// COMMANDS ///////////////////
+// cmdS ///////////////////
 enter({
-	
-	
+	name: "help",
+	aliases: ["menu", "cmds"],
+	group: "info",
+	topic: "Shows the cmds or cmd info.",
+	usage: "(cmd)",
+	code: function(msg, args) {
+		if (!args.length) {
+			let cmd;
+			
+			for (let i = 0; i < cmds.length; i++) {
+				if (cmds[i].name === args[0].toLowerCase()) {
+					cmd = cmds[i];
+				} else {
+					for (let k = 0; k < cmds[i].aliases.length; k++) {
+						if (cmds[i].aliases[k] === args[0].toLowerCase()) {
+							cmd = cmds[i];
+						};
+					};
+				};
+			};
+			
+			if (!cmd) {
+				return self.createMessage(
+					msg.channel.id,
+					`**${args[0]}** is an invalid cmd.`
+				);
+			} else {
+				return self.createMessage(
+					msg.channel.id,
+					new embed()
+						.title(cmd.name)
+						.description(cmd.topic)
+						.fields([
+							{
+								name: "Aliases",
+								value: cmd.aliases
+									.map(a => `\`${a}\``)
+									.join("\n"),
+								inline: true
+							},
+							{
+								name: "Usage",
+								value: "**" 
+									+ config.prefix
+									+ cmd.name
+									+ "**" + cmd.usage,
+								inline: true
+							}
+						])
+				);
+			};
+		}
+	}
+});
+///////////////////////////////
+enter({
+});
+
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
@@ -154,7 +212,26 @@ client.on("messageCreate", async function(msg) {
 		.slice(config.prefix.length)
 		.trim()
 		.split(/ +/g);
-	const command = args
+	const cmd = args
 		.shift()
 		.toLowerCase();
+	let data;
+			
+	for (let i = 0; i < cmds.length; i++) {
+		if (cmds[i].name === cmd) {
+			use = cmds[i];
+		} else {
+			for (let k = 0; k < cmds[i].aliases.length; k++) {
+				if (cmds[i].aliases[k] === cmd) {
+					use = cmds[i];
+				};
+			};
+		};
+	};
+	
+	if (!data) {
+		return;
+	} else {
+		return data.code(msg, args);
+	};
 });
