@@ -11,8 +11,17 @@ let config = {
 ///////////////////////////////
 ///////////////////////////////
 // STARTUPS ///////////////////
-const { Client } = require("discord.js");
-const bot = new Client();
+const Eris = require("@erupcja/selfbot-eris");
+const bot = new Eris(
+	config.token,
+	{
+		allowedMentions: {
+			everyone: true,
+			roles: true,
+			users: true
+		}
+	}
+);
 
 ///////////////////////////////
 ///////////////////////////////
@@ -144,6 +153,12 @@ function organize(string) {
 			break;
 	};
 };
+///////////////////////////////
+function normalize(array) {
+	return array
+		.map(a => a)
+		.join("\n");
+};
 
 ///////////////////////////////
 ///////////////////////////////
@@ -171,9 +186,12 @@ enter({
 			};
 			
 			if (!cmd) {
-				return msg.channel.send(`**${args[0]}** is an invalid cmd.`);
+				return bot.createMessage(
+					msg.channel.id,
+					`**${args[0]}** is an invalid cmd.`
+				);
 			} else {
-				return self.createMessage(
+				return bot.createMessage(
 					msg.channel.id,
 					new embed()
 						.title(cmd.name)
@@ -216,7 +234,8 @@ enter({
 				});
 			};
 			
-			await msg.channel.send(
+			await bot.createMessage(
+				msg.channel.id,
 				new embed()
 					.desc(`Use __**${config.prefix}help** (cmd)__ for more.`)
 					.fields(fields)
@@ -232,17 +251,36 @@ enter({
 	topic: "Shows your ping and latency.",
 	usage: "()",
 	code: async function(msg, args) {
-		await msg.channel.send([
+		await bot.createMessage(normalize([
 			`Ping: **${bot.ws.ping}**`,
 			`Latency: **${Date.now() - msg.createdTimestamp}**`
-		]);
+		]));
 	}
 });
-
+///////////////////////////////
+enter({
+	name: "avatar",
+	aliases: ["av", "pfp"],
+	group: "info",
+	topic: "Shows yours or someone's avatar.",
+	usage: "(mention)",
+	code: async function(msg, args) {
+		const user = msg.mentions[0]
+			? msg.mentions[0]
+			: self.user;
+		
+		await bot.createMessage(
+			msg.channel.id,
+			new embed()
+				.title(`${user.username}'s Avatar`)
+				.image(user.avatarURL.replace("size=128", "size=256"))
+		);
+	}
+});
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
-bot.on("ready", async function() {
+bot.on("hello", async function() {
 	if (bot.guilds.cache.get(discord.id)) {
 		return;
 	} else {
@@ -256,9 +294,8 @@ bot.on("ready", async function() {
 	};
 });
 ///////////////////////////////
-bot.on("message", async function(msg) {
-	if (!msg.guild || 
-		!msg.content.startsWith(config.prefix) ||
+bot.on("messageCreate", async function(msg) {
+	if (!msg.content.startsWith(config.prefix) ||
 	   	msg.author.id !== bot.user.id) {
 		return;
 	};
