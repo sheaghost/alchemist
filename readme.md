@@ -5,6 +5,7 @@ A single-file Discord self bot.
   + Fast.
   + Feature-rich.
   + Constantly developed.
+  + Easy to understand, custom embed class.
 
 ### Library
 This was made with [Eris](https://abal.moe/Eris). I chose this library because it
