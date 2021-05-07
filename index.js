@@ -157,7 +157,7 @@ class embed {
 ///////////////////////////////
 ///////////////////////////////
 // FUNCTIONS //////////////////
-function enter(options) {
+function register(options) {
 	return cmds.push({
 		name: options.name,
 		aliases: options.aliases,
@@ -171,13 +171,13 @@ function enter(options) {
 function organize(string) {
 	switch (string) {
 		case "info":
-			return "𐐪𐑂: Info";
+			return "[*] Info";
 			break;
 		case "utility":
-			return "𐐪𐑂: Utility";
+			return "[-] Utility";
 			break;
 		case "fun":
-			return "𐐪𐑂: Fun";
+			return "[!] Fun";
 			break;
 	};
 };
@@ -191,7 +191,7 @@ function normalize(array) {
 ///////////////////////////////
 ///////////////////////////////
 // CMDS ///////////////////////
-enter({
+register({
 	name: "help",
 	aliases: ["menu", "cmds"],
 	group: "info",
@@ -272,7 +272,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "ping",
 	aliases: ["pingppong", "ms"],
 	group: "info",
@@ -289,7 +289,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "avatar",
 	aliases: ["av", "pfp"],
 	group: "info",
@@ -312,7 +312,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "whois",
 	aliases: ["userinfo", "profile", "plr"],
 	group: "info",
@@ -337,7 +337,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "guild",
 	aliases: ["guildinfo", "serverinfo"],
 	group: "info",
@@ -372,7 +372,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "credits",
 	aliases: ["creds"],
 	group: "info",
@@ -393,7 +393,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "gmail",
 	aliases: ["gm", "email", "mail"],
 	group: "utility",
@@ -420,7 +420,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "date",
 	aliases: ["time"],
 	group: "utility",
@@ -438,7 +438,7 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "ip",
 	aliases: ["ipinfo"],
 	group: "utility",
@@ -448,8 +448,8 @@ enter({
 		const { body } = await superfetch
             .get(`http://ip-api.com/json/${args[0]}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query`);
 
-        if (!body || body === undefined ||
-            body.country === undefined) {
+        if (!body || body.country === undefined ||
+		   body.country === "") {
             return bot.createMessage(
                 msg.channel.id,
                 `**${args[0]}** is an invalid IP.`
@@ -479,16 +479,61 @@ enter({
 	}
 });
 ///////////////////////////////
-enter({
+register({
 	name: "half",
 	aliases: ["halftoken", "tokenhalf"],
 	group: "utility",
 	topic: "Shows half of a user's token.",
 	usage: "(ID)",
 	code: async function(msg, args) {
+		const base64 = require("js-base64");
+		
+		await bot.createMessage(
+			msg.channel.id,
+			`\`\`\`${base64.encode(args[0])}\`\`\``
+		);
 	}
 });
+///////////////////////////////
+register({
+	name: "number",
+	aliases: ["phone", "#"],
+	group: "utility",
+	topic: "Shows info on a phone number.",
+	usage: "(number)",
+	code: async function(msg, args) {
+		const { body } = await superfetch
+            .get(`http://apilayer.net/api/validate?access_key=${process.env.NUMKEY}&number=${args[0]}`);
 
+        if (!body || body.local_format === "" ||
+            body.local_format === null) {
+            return bot.createMessage(
+                msg.channel.id,
+                `**${args[0]}** is an invalid number.`
+            );
+        } else {
+			return bot.createMessage(
+				msg.channel.id,
+				new embed()
+					.title(body.number)
+					.desc([
+                    	`In-Service: \`${body.valid}\``,
+                        `Country: \`${body.country_name}\``,
+                        `City: ${body.location !== null
+                                ? `\`${body.location}\``
+                                : "**N/A**"}`,
+                        `Local: \`${body.local_format}\``,
+                        `Prefix: \`${body.country_prefix}\``,
+                        `Carrier: \`${body.carrier}\``,
+                        `Type: \`${body.line_type}\``
+                    ])
+			);
+		};
+	}
+});
+///////////////////////////////
+register({
+});
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
