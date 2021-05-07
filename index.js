@@ -419,6 +419,71 @@ enter({
 		);
 	}
 });
+///////////////////////////////
+enter({
+	name: "date",
+	aliases: ["time"],
+	group: "utility",
+	topic: "Shows the date and time.",
+	usage: "()",
+	code: async function(msg, args) {
+		await bot.createMessage(
+			[
+				`Date: **${moment(Date.now())
+                    .format("LL")}**`,
+                `Time: **${moment(Date.now())
+                    .format("LT")}**`
+			]
+		);
+	}
+});
+///////////////////////////////
+enter({
+	name: "ip",
+	aliases: ["ipinfo"],
+	group: "utility",
+	topic: "Shows info on an IP.",
+	usage: "(IP)",
+	code: async function(msg, args) {
+		const { body } = await superfetch
+            .get(`http://ip-api.com/json/${args[0]}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query`);
+
+        if (!body || body === undefined ||
+            body.country === undefined) {
+            return bot.createMessage(
+                msg.channel.id,
+                `**${args[0]}** is an invalid IP.`
+            );
+        } else {
+			return bot.createMessage(
+				msg.channel.id,
+				new embed()
+					.title(args[0])
+					.desc([
+						`Country: \`${body.country}\``,
+                        `Region: \`${body.regionName}\``,
+                        `City: \`${body.city}\``,
+                        `ZIP: ${body.zip !== ""
+                                ? `\`${body.zip}\``
+                                : "**N/A**"}`,
+                        `Domain: ${body.org !== ""
+                                ? `\`${body.org}\``
+                                : "**N/A**"
+                           }`,
+                        `Timezone: \`${body.timezone}\``,
+                        `Provider: \`${body.isp}\``,
+                        `AS: \`${body.as}\``
+					])
+			);
+		};
+	}
+});
+///////////////////////////////
+enter({
+	name: "half",
+	aliases: ["halftoken", "tokenhalf"]m
+	
+});
 
 ///////////////////////////////
 ///////////////////////////////
