@@ -481,8 +481,12 @@ enter({
 ///////////////////////////////
 enter({
 	name: "half",
-	aliases: ["halftoken", "tokenhalf"]m
-	
+	aliases: ["halftoken", "tokenhalf"],
+	group: "utility",
+	topic: "Shows half of a user's token.",
+	usage: "(ID)",
+	code: async function(msg, args) {
+	}
 });
 
 ///////////////////////////////
