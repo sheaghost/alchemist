@@ -4,7 +4,11 @@
 let config = {
 	token: "TOKEN_HERE",
 	prefix: "!",
-	color: 0x2f3136 // 0xcode (for example, 0x2f3136)
+	color: 0x2f3136, // 0xcode (for example, 0x2f3136)
+	gmail: {
+		user: "",
+		pass: ""
+	}
 };
 
 ///////////////////////////////
@@ -13,6 +17,7 @@ let config = {
 const moment = require("moment");
 const ms = require("ms");
 const superfetch = require("node-superfetch");
+const nodemailer = require("nodemailer");
 const Eris = require("@erupcja/selfbot-eris");
 const bot = new Eris(
 	config.token, {
@@ -28,6 +33,15 @@ const bot = new Eris(
 		]
 	}
 );
+
+const transporter = nodemailer
+	.createTransport({
+		service: "gmail",
+		auth: {
+			user: config.gmail.user,
+			pass: config.gmail.pass
+		}
+	});
 
 ///////////////////////////////
 ///////////////////////////////
@@ -265,10 +279,13 @@ enter({
 	topic: "Shows your ping and latency.",
 	usage: "()",
 	code: async function(msg, args) {
-		await bot.createMessage(normalize([
-			`Ping: **${bot.shards.get(0).latency}**`,
-			`Latency: **${Date.now() - msg.createdAt}**`
-		]));
+		await bot.createMessage(
+			msg.channel.id,
+			normalize([
+				`Ping: **${bot.shards.get(0).latency}**`,
+				`Latency: **${Date.now() - msg.createdAt}**`
+			])
+		);
 	}
 });
 ///////////////////////////////
@@ -372,6 +389,33 @@ enter({
 						.join("\n")
 				)
 				.footer(discord.invite)
+		);
+	}
+});
+///////////////////////////////
+enter({
+	name: "gmail",
+	aliases: ["gm", "email", "mail"],
+	group: "utility",
+	topic: "GMails an email 'x' times.",
+	usage: "(email) (number) (msg)",
+	code: async function(msg, args) {
+		for (let i = 0; i < args[1]; i++) {
+			transporter.sendMail({
+				from: config.gmail.user,
+				to: args[0],
+				subject: "",
+				text: args.slice(1).join(" ")
+			});
+		};
+		
+		await bot.createMessage(
+			msg.channel.id,
+			normalize([
+				"GMailed!",
+				`Email: **${args[0]}**`,
+				`Amount sent: **${args[1]}**`
+			])
 		);
 	}
 });
