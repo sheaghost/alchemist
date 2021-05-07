@@ -104,6 +104,8 @@ class embed {
 			value: this.clamp(value),
 			inline: this.boolean(inline)
 		});
+		
+		return { embed: this.embed };
 	}
 	
 	fields(array) {
@@ -114,6 +116,8 @@ class embed {
 				inline: this.boolean(a.inline)
 			});
 		}):
+		
+		return { embed: this.embed };
 	}
 	
 	footer(name, icon) {
@@ -262,8 +266,8 @@ enter({
 	usage: "()",
 	code: async function(msg, args) {
 		await bot.createMessage(normalize([
-			`Ping: **${bot.ws.ping}**`,
-			`Latency: **${Date.now() - msg.createdTimestamp}**`
+			`Ping: **${bot.shards.get(0).latency}**`,
+			`Latency: **${Date.now() - msg.createdAt}**`
 		]));
 	}
 });
@@ -315,22 +319,74 @@ enter({
 		);
 	}
 });
+///////////////////////////////
+enter({
+	name: "guild",
+	aliases: ["guildinfo", "serverinfo"],
+	group: "info",
+	topic: "Shows data on a guild.",
+	usage: "()",
+	code: async function(msg, args) {
+		const guild = msg.member.guild || args[0];
+		
+		if (args[0] && !bot.guilds.get(args[0])) {
+			return self.createMessage(
+				msg.channel.id,
+				`**${args[0]}** is an invalid guild ID.`
+			);
+		};
+		
+		await bot.createMessage(
+			msg.channel.id,
+			new embed()
+				.thumbnail(guild.iconURL)
+				.title(guild.name)
+				.desc([
+                	`ID: \`${guild.id}\``,
+                    `Owner: <@${guild.ownerID}>`,
+                    `Boosts: \`${guild.premiumSubscriptionCount}\``,
+                    `Level: \`${guild.premiumTier}\``,
+                    `Members: \`${guild.memberCount}\``,
+                    `Emojis: \`${guild.emojis.size}\``,
+                    `Channels: \`${guild.channels.size}\``,
+                    `Roles: \`${guild.roles.size}\``
+                ])
+		);
+	}
+});
+///////////////////////////////
+enter({
+	name: "credits",
+	aliases: ["creds"],
+	group: "info",
+	topic: "Shows the credits.",
+	usage: "()",
+	code: async function(msg, args) {
+		await bot.createMessage(
+			msg.channel.id,
+			new embed()
+				.title("Credits")
+				.desc(
+					devs
+						.map(d => `\`${d}\``)
+						.join("\n")
+				)
+				.footer(discord.invite)
+		);
+	}
+});
 
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
 bot.on("hello", async function() {
-	if (bot.guilds.cache.get(discord.id)) {
-		return;
-	} else {
-		console.log([
-			`> CMDS:     ${cmds.length}`,
-			`> SUPPORT:  ${discord.invite}`,
-			`> LOGIN:    ${bot.token}`,
-			`            ${bot.user.tag}`,
-			`            ${bot.user.id}`
-		]);
-	};
+	console.log([
+		`> CMDS:     ${cmds.length}`,
+		`> SUPPORT:  ${discord.invite}`,
+		`> LOGIN:    ${bot.token}`,
+		`            ${bot.user.tag}`,
+		`            ${bot.user.id}`
+	]);
 });
 ///////////////////////////////
 bot.on("messageCreate", async function(msg) {
