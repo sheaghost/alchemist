@@ -33,4 +33,4 @@ You can do multiple downloads by doing **npm i --save {package} {package}**, lik
 
 After all of that is done, you can now go to your file and enter your **token**, 
 **prefix**, and embed **color** in the config variable at the top of the file.
-Then, run **node .** in your console directed to your bot file.
+Then, run **node {file name}** in your console directed to your bot file.
