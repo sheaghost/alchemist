@@ -16,6 +16,15 @@ with resources and support, and updated constantly.
 ### Updates
 To get new updates, join the [server](https://discord.gg/Wdrsu2xQez).
 
+### Environment
+Your **config** (at the top of the file) contains necessary variables for the code to run.
+Please make sure to fill out the following fields:
+  + token
+  + prefix
+  + color (embeds)
+  + gmail user
+  + gmail pass
+
 ### Download & Run
 Make sure you have the following:
   + [Node](https://nodejs.org/)
@@ -30,7 +39,3 @@ Upon doing that and having node and such, run **npm i --save** then the package 
 
 You can do multiple downloads by doing **npm i --save {package} {package}**, like this, 
 **npm i --save moment node-superfetch**.
-
-After all of that is done, you can now go to your file and enter your **token**, 
-**prefix**, and embed **color** in the config variable at the top of the file.
-Then, run **node {file name}** in your console directed to your bot file.
