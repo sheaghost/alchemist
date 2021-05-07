@@ -533,7 +533,39 @@ register({
 });
 ///////////////////////////////
 register({
+	name: "status",
+	aliases: ["activity"],
+	group: "utility",
+	topic: "Changes your status.",
+	usage: "(type) (text)",
+	code: async function(msg, args) {
+		let type;
+		
+		switch (args[0]) {
+			case "playing":
+				type = 0;
+				break;
+			case "streaming":
+				type = 1;
+				break;
+			case "listening":
+				type = 2;
+				break;
+			case "watching":
+				type = 3;
+				break;
+		};
+
+        bot.editStatus(
+            "dnd", {
+                name: args.slice(1).join(" "),
+                type: type,
+                url: "https://twitch.tv/ALCHEMISTTT"
+            }
+        );
+	}
 });
+
 ///////////////////////////////
 ///////////////////////////////
 // EVENTS /////////////////////
