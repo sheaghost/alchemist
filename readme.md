@@ -36,6 +36,7 @@ Upon doing that and having node and such, run **npm i --save** then the package 
   + moment
   + ms
   + node-superfetch
+  + nodemailer
 
 You can do multiple downloads by doing **npm i --save {package} {package}**, like this, 
 **npm i --save moment node-superfetch**.
