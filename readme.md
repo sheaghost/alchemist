@@ -5,7 +5,7 @@ A single-file Discord self bot.
   + Fast.
   + Feature-rich.
   + Constantly developed.
-  + Easy to understand, custom embed class.
+  + Easy to understand embed system.
 
 ### Library
 This was made with [Eris](https://abal.moe/Eris). I chose this library because it
@@ -24,6 +24,7 @@ Please make sure to fill out the following fields:
   + color (embeds)
   + gmail user
   + gmail pass
+  + numkey (api key)
 
 ### Download & Run
 Make sure you have the following:
@@ -34,9 +35,11 @@ When you have your file, direct your command prompt to the file for this self bo
 Upon doing that and having node and such, run **npm i --save** then the package for all of these:
   + @erupcja/selfbot-eris
   + moment
+  + discord.js
   + ms
   + node-superfetch
   + nodemailer
+  + js-base64
 
 You can do multiple downloads by doing **npm i --save {package} {package}**, like this, 
 **npm i --save moment node-superfetch**.
