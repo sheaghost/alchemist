@@ -48,7 +48,7 @@ const discord = {
     invite: "discord.gg/Wdrsu2xQez"
 };
 
-const source = "https://github.com/ex7ase/gandalf";
+const source = "https://github.com/ex7ase/alchemist";
 const donors = {};
 let cmds = [];
 
