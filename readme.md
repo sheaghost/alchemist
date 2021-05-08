@@ -1,6 +1,9 @@
 ### Overview
 A single-file Discord self bot.
 
+### Disclaimer
+This is only for demonstration.
+
 ### Features
   + Fast.
   + Feature-rich.
@@ -25,6 +28,10 @@ Please make sure to fill out the following fields:
   + gmail user
   + gmail pass
   + numkey (api key)
+
+For gmail-bombing, you'd need to allow "lesser secure websites" in your gmail, so nodemailer
+can login and send the emails. The first time you try to use gmail-bomb, it should give
+you to the option to do this.
 
 ### Download & Run
 Make sure you have the following:
