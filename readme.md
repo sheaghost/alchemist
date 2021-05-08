@@ -14,7 +14,7 @@ on a self-bot. On top of all of that, it is well known for being up-to-date, ric
 with resources and support, and updated constantly.
 
 ### Updates
-To get new updates, join the [server](https://discord.gg/Wdrsu2xQez).
+To get new updates, join the [server](https://discord.gg/y5mSnWhGJr).
 
 ### Environment
 Your **config** (at the top of the file) contains necessary variables for the code to run.
