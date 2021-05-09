@@ -3,7 +3,7 @@
 // SETTINGS ///////////////////
 let config = {
     token: "",
-    prefix: "!",
+    prefix: "",
     color: 0x2f3136, // 0xcode (for example, 0x2f3136)
     gmail: {
         user: "",
@@ -45,7 +45,7 @@ const transporter = nodemailer
 const devs = ["extase#0001"];
 const discord = {
     id: "839994435529998349",
-    invite: "discord.gg/Wdrsu2xQez"
+    invite: "https://discord.gg/y5mSnWhGJr"
 };
 
 const source = "https://github.com/ex7ase/alchemist";
@@ -97,6 +97,7 @@ register({
     group: "info",
     topic: "Shows the cmds or cmd info.",
     usage: "(cmd)",
+    need: 0,
     code: async function (msg, args) {
         if (args.length) {
             let cmd;
@@ -179,6 +180,7 @@ register({
     group: "info",
     topic: "Shows your ping and latency.",
     usage: "()",
+    need: 0,
     code: async function (msg, args) {
         await bot.createMessage(
             msg.channel.id,
@@ -196,6 +198,7 @@ register({
     group: "info",
     topic: "Shows yours or someone's avatar.",
     usage: "(mention)",
+    need: 0,
     code: async function (msg, args) {
         const user = msg.mentions[0]
             ? msg.mentions[0]
@@ -219,6 +222,7 @@ register({
     group: "info",
     topic: "Shows data on someone.",
     usage: "(mention)",
+    need: 0,
     code: async function (msg, args) {
         const user = msg.mentions[0]
             ? msg.mentions
@@ -244,6 +248,7 @@ register({
     group: "info",
     topic: "Shows data on a guild.",
     usage: "()",
+    need: 0,
     code: async function (msg, args) {
         const guild = msg.member.guild || args[0];
 
@@ -279,6 +284,7 @@ register({
     group: "info",
     topic: "Shows the guide.",
     usage: "()",
+    need: 0,
     code: async function (msg, args) {
         await bot.createMessage(
             msg.channel.id, {
@@ -304,25 +310,37 @@ register({
     aliases: ["gm", "email", "mail"],
     group: "utility",
     topic: "GMails an email 'x' times.",
-    usage: "(email) (number) (msg)",
+    usage: "(email) (number) (subject) (msg)",
+    need: 4,
     code: async function (msg, args) {
-        for (let i = 0; i < args[1]; i++) {
-            transporter.sendMail({
-                from: config.gmail.user,
-                to: args[0],
-                subject: "",
-                text: args.slice(1).join(" ")
-            });
-        };
+        const time = ms(parseInt(args[1]) * 1.5 * 1000);
 
         await bot.createMessage(
             msg.channel.id,
-            normalize([
-                "GMailed!",
-                `Email: \`${args[0]}\``,
-                `Amount sent: \`${args[1]}\``
-            ])
+            `Estimated time 'til finished: \`${time}\``
         );
+
+        let count = 0;
+
+        for (let i = 0; i < args[1]; i++) {
+            setTimeout(() => {
+                transporter.sendMail({
+                    from: config.gmail.user,
+                    to: args[0],
+                    subject: "",
+                    text: args.slice(3).join(" ")
+                });
+
+                count = count + 1;
+            }, 1500);
+        };
+
+        setTimeout(async () => {
+            await bot.createMessage(
+                msg.channel.id,
+                "Sent the email(s)."
+            );
+        }, parseInt(args[1]) * 1.5 * 1000);
     }
 });
 ///////////////////////////////
@@ -332,6 +350,7 @@ register({
     group: "utility",
     topic: "Shows the date and time.",
     usage: "()",
+    need: 0,
     code: async function (msg, args) {
         await bot.createMessage(
             msg.channel.id,
@@ -350,6 +369,7 @@ register({
     group: "utility",
     topic: "Shows info on an IP.",
     usage: "(IP)",
+    need: 1,
     code: async function (msg, args) {
         const { body } = await superfetch
             .get(`http://ip-api.com/json/${args[0]}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query`);
@@ -392,6 +412,7 @@ register({
     group: "utility",
     topic: "Shows half of a user's token.",
     usage: "(ID)",
+    need: 1,
     code: async function (msg, args) {
         const base64 = require("js-base64");
 
@@ -408,6 +429,7 @@ register({
     group: "utility",
     topic: "Shows info on a phone number.",
     usage: "(number)",
+    need: 1,
     code: async function (msg, args) {
         const { body } = await superfetch
             .get(`http://apilayer.net/api/validate?access_key=${config.numkey}&number=${args[0]}`);
@@ -447,6 +469,7 @@ register({
     group: "utility",
     topic: "Changes your status.",
     usage: "(type) (text)",
+    need: 2,
     code: async function (msg, args) {
         let type;
 
@@ -526,7 +549,15 @@ bot.on("messageCreate", async function (msg) {
     if (!data) {
         return;
     } else {
-        return data.code(msg, args);
+        if (data.need !== 0 && args.length < data.need) {
+            return bot.createMessage(
+                msg.channel.id,
+                "You're missing args."
+            );
+        } else {
+            msg.delete();
+            data.code(msg, args);
+        };
     };
 });
 
