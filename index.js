@@ -4,7 +4,7 @@
 let config = {
     token: "",
     prefix: "",
-    color: 0x2f3136, // 0xcode (for example, 0x2f3136)
+    color: "#2f3136",
     gmail: {
         user: "",
         pass: ""
