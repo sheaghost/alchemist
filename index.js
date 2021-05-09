@@ -4,7 +4,7 @@
 let config = {
     token: "",
     prefix: "",
-    color: "#2f3136",
+    color: 0x2f3136, // 0xcode (for example, 0x2f3136)
     gmail: {
         user: "",
         pass: ""
@@ -270,9 +270,9 @@ register({
                     `Boosts: \`${guild.premiumSubscriptionCount}\``,
                     `Level: \`${guild.premiumTier}\``,
                     `Members: \`${guild.memberCount}\``,
-                    `Emojis: \`${guild.emojis.size}\``,
-                    `Channels: \`${guild.channels.size}\``,
-                    `Roles: \`${guild.roles.size}\``
+                    `Emojis: \`${guild.emojis.size || 0}\``,
+                    `Channels: \`${guild.channels.size || 0}\``,
+                    `Roles: \`${guild.roles.size || 0}\``
                 ])
         });
     }
